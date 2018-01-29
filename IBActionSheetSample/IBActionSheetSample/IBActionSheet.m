@@ -272,7 +272,7 @@ CGRect adjustedScreenBounds()
                 otherButton = [[IBActionSheetButton alloc] initWithAllCornersRounded];
             }
             
-            [otherButton setTitle:[titles objectAtIndex:0] forState:UIControlStateAll];
+            [self fillButton:otherButton object:[titles objectAtIndex:0]];
             [self.buttons insertObject:otherButton atIndex:0];
             
             break;
@@ -292,15 +292,13 @@ CGRect adjustedScreenBounds()
             
             [secondButton setTitle:[titles objectAtIndex:0] forState:UIControlStateAll];
             [self.buttons insertObject:secondButton atIndex:0];
-            [self.buttons insertObject:otherButton atIndex:1];
-            
+            [self fillButton:otherButton object:[titles objectAtIndex:1]];
             break;
             
         } default: {
             
             IBActionSheetButton *bottomButton = [[IBActionSheetButton alloc] initWithBottomCornersRounded];
-            [bottomButton setTitle:[titles lastObject] forState:UIControlStateAll];
-            
+            [self fillButton:bottomButton object:[titles lastObject]];
             IBActionSheetButton *topButton;
             
             if (title) {
@@ -309,13 +307,14 @@ CGRect adjustedScreenBounds()
                 topButton = [[IBActionSheetButton alloc] initWithTopCornersRounded];
             }
             
-            [topButton setTitle:[titles objectAtIndex:0] forState:UIControlStateAll];
+            [self fillButton:topButton object:[titles objectAtIndex:0]];
             [self.buttons insertObject:topButton atIndex:0];
             
             int whereToStop = (int)titles.count - 1;
             for (int i = 1; i < whereToStop; ++i) {
                 IBActionSheetButton *middleButton = [[IBActionSheetButton alloc] init];
-                [middleButton setTitle:[titles objectAtIndex:i] forState:UIControlStateAll];
+
+                [self fillButton:middleButton object:[titles objectAtIndex:i]];
                 [self.buttons insertObject:middleButton atIndex:i];
             }
             
@@ -351,6 +350,13 @@ CGRect adjustedScreenBounds()
     return self;
 }
 
+- (void)fillButton:(IBActionSheetButton *)button object:(NSObject *)obj {
+    if ([obj isKindOfClass:[NSString class]]) {
+        [button setTitle:obj forState:UIControlStateAll];
+    } else {
+        [button setImage:obj forState:UIControlStateAll];
+    }
+}
 
 
 - (void)setUpTheActionSheet {
@@ -512,6 +518,14 @@ CGRect adjustedScreenBounds()
 #pragma mark IBActionSheet Helpful methods
 
 - (NSInteger)addButtonWithTitle:(NSString *)title {
+    return [self addButtonWithObject:title];
+}
+
+- (NSInteger)addButtonWithImage:(UIImage *)image {
+    return [self addButtonWithObject:image];
+}
+
+- (NSInteger)addButtonWithObject:(NSObject *)obj {
     
     int index = (int)self.buttons.count;
     
@@ -526,7 +540,7 @@ CGRect adjustedScreenBounds()
     else
         button = [[IBActionSheetButton alloc] initWithBottomCornersRounded];
     
-    [button setTitle:title forState:UIControlStateAll];
+    [self fillButton:button object:obj];
     
     button.index = index;
     
@@ -953,7 +967,7 @@ CGRect adjustedScreenBounds()
     self.titleLabel.font = [UIFont systemFontOfSize:21];
     [self setTitleColor:[UIColor colorWithRed:0.000 green:0.500 blue:1.000 alpha:1.000] forState:UIControlStateAll];
     self.originalTextColor = [UIColor colorWithRed:0.000 green:0.500 blue:1.000 alpha:1.000];
-    
+    [self.imageView setContentMode:UIViewContentModeScaleAspectFit];
     self.alpha = 0.95f;
     
     self.cornerType = IBActionSheetButtonCornerTypeNoCornersRounded;
