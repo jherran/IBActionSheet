@@ -968,6 +968,7 @@ CGRect adjustedScreenBounds()
     [self setTitleColor:[UIColor colorWithRed:0.000 green:0.500 blue:1.000 alpha:1.000] forState:UIControlStateAll];
     self.originalTextColor = [UIColor colorWithRed:0.000 green:0.500 blue:1.000 alpha:1.000];
     [self.imageView setContentMode:UIViewContentModeScaleAspectFit];
+    self.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
     self.alpha = 0.95f;
     
     self.cornerType = IBActionSheetButtonCornerTypeNoCornersRounded;
