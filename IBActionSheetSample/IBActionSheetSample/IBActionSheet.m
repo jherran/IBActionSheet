@@ -364,100 +364,69 @@ CGRect adjustedScreenBounds()
     float height;
     float width = CGRectGetWidth(adjustedScreenBounds());
     
-    // slight adjustment to take into account non-retina devices
-    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]
-        && [[UIScreen mainScreen] scale] == 2.0) {
-        
-        // setup spacing for retina devices
-        if (self.hasCancelButton) {
-            height = 59.5;
-        } else if (!self.hasCancelButton && self.titleView) {
-            height = 52.0;
-        } else {
-            height = 104.0;
-        }
-        
-        if (self.buttons.count) {
-            height += (self.buttons.count * 44.5);
-        }
-        if (self.titleView) {
-            height += CGRectGetHeight(self.titleView.frame) - 44;
-        }
-        
-        self.frame = CGRectMake(0, 0, width, height);
-        [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        
-        CGPoint pointOfReference = CGPointMake(CGRectGetWidth(self.frame) / 2.0, CGRectGetHeight(self.frame) - 30);
-        
-        int whereToStop;
-        if (self.hasCancelButton) {
-            [self addSubview:[self.buttons lastObject]];
-            [[self.buttons lastObject] setCenter:pointOfReference];
-            [[self.buttons objectAtIndex:0] setCenter:CGPointMake(pointOfReference.x, pointOfReference.y - 52)];
-            pointOfReference = CGPointMake(pointOfReference.x, pointOfReference.y - 52);
-            whereToStop = (int)self.buttons.count - 2;
-        } else {
-            [self addSubview:[self.buttons lastObject]];
-            [[self.buttons lastObject] setCenter:pointOfReference];
-            whereToStop = (int)self.buttons.count - 1;
-        }
-        
-        for (int i = 0, j = whereToStop; i <= whereToStop; ++i, --j) {
-            [self addSubview:[self.buttons objectAtIndex:i]];
-            [[self.buttons objectAtIndex:i] setCenter:CGPointMake(pointOfReference.x, pointOfReference.y - (44.5 * j))];
-        }
-        
-        if (self.titleView) {
-            [self addSubview:self.titleView];
-            self.titleView.center = CGPointMake(self.center.x, CGRectGetHeight(self.titleView.frame) / 2.0);
-        }
-        
+    if (self.hasCancelButton) {
+        height = 60.0;
     } else {
-        
-        // setup spacing for non-retina devices
-        
-        if (self.hasCancelButton) {
-            height = 60.0;
-        } else {
-            height = 104.0;
-        }
-        
-        if (self.buttons.count) {
-            height += (self.buttons.count * 45);
-        }
-        if (self.titleView) {
-            height += CGRectGetHeight(self.titleView.frame) - 45;
-        }
-        
-        self.frame = CGRectMake(0, 0, width, height);
-        [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        
-        CGPoint pointOfReference = CGPointMake(CGRectGetWidth(self.frame) / 2.0, CGRectGetHeight(self.frame) - 30);
-        
-        int whereToStop;
-        if (self.hasCancelButton) {
-            [self addSubview:[self.buttons lastObject]];
-            [[self.buttons lastObject] setCenter:pointOfReference];
-            [[self.buttons objectAtIndex:0] setCenter:CGPointMake(pointOfReference.x, pointOfReference.y - 52)];
-            pointOfReference = CGPointMake(pointOfReference.x, pointOfReference.y - 52);
-            whereToStop = (int)self.buttons.count - 2;
-        } else {
-            [self addSubview:[self.buttons lastObject]];
-            [[self.buttons lastObject] setCenter:pointOfReference];
-            whereToStop = (int)self.buttons.count - 1;
-        }
-        
-        for (int i = 0, j = whereToStop; i <= whereToStop; ++i, --j) {
-            [self addSubview:[self.buttons objectAtIndex:i]];
-            [[self.buttons objectAtIndex:i] setCenter:CGPointMake(pointOfReference.x, pointOfReference.y - (45 * j))];
-        }
-        
-        if (self.titleView) {
-            [self addSubview:self.titleView];
-            self.titleView.center = CGPointMake(self.center.x, CGRectGetHeight(self.titleView.frame) / 2.0);
-        }
+        height = 104.0;
     }
     
+    if (self.buttons.count) {
+        height += (self.buttons.count * 45);
+    }
+    if (self.titleView) {
+        height += CGRectGetHeight(self.titleView.frame) - 45;
+    }
+    
+    CGFloat spaceOfView = UIScreen.mainScreen.bounds.size.height - 40;
+    CGFloat maxHeight = MIN(height, spaceOfView);
+    
+    self.frame = CGRectMake(0, 0, width, maxHeight);
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    
+    CGPoint pointOfReference = CGPointMake(CGRectGetWidth(self.frame) / 2.0, CGRectGetHeight(self.frame) - 30);
+    
+    int whereToStop;
+    if (self.hasCancelButton) {
+        [self addSubview:[self.buttons lastObject]];
+        [[self.buttons lastObject] setCenter:pointOfReference];
+        [[self.buttons objectAtIndex:0] setCenter:CGPointMake(pointOfReference.x, pointOfReference.y - 52)];
+        pointOfReference = CGPointMake(pointOfReference.x, pointOfReference.y - 52);
+        whereToStop = (int)self.buttons.count - 2;
+    } else {
+        [self addSubview:[self.buttons lastObject]];
+        [[self.buttons lastObject] setCenter:pointOfReference];
+        whereToStop = (int)self.buttons.count - 1;
+    }
+    
+    // Added Scrollview
+
+    CGFloat heightScrollView = 44.5 * (self.buttons.count - 1);
+    CGFloat spaceOfButtons = UIScreen.mainScreen.bounds.size.height - 100;
+    if (self.titleView) {
+        spaceOfButtons -= CGRectGetHeight(self.titleView.frame);
+    }
+    maxHeight = MIN(heightScrollView, spaceOfButtons);
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, UIScreen.mainScreen.bounds.size.width, maxHeight)];
+    [self addSubview:scrollView];
+    scrollView.showsHorizontalScrollIndicator = NO;
+    scrollView.showsVerticalScrollIndicator = NO;
+    scrollView.clipsToBounds = YES;
+    [scrollView setFrame:CGRectMake(0, pointOfReference.y + 24 - maxHeight, UIScreen.mainScreen.bounds.size.width, maxHeight)];
+    [scrollView setContentSize:CGSizeMake(UIScreen.mainScreen.bounds.size.width, heightScrollView)];
+    
+    
+    for (int i = 0; i <= whereToStop; ++i) {
+        [scrollView addSubview:[self.buttons objectAtIndex:i]];
+        CGRect buttonFrame = [[self.buttons objectAtIndex:i] frame];
+        buttonFrame.origin.y = 44.5 * i;
+        buttonFrame.origin.x = 8;
+        [[self.buttons objectAtIndex:i] setFrame:buttonFrame];
+    }
+        
+    if (self.titleView) {
+        [self addSubview:self.titleView];
+        self.titleView.center = CGPointMake(self.center.x, CGRectGetHeight(self.titleView.frame) / 2.0);
+    }
 }
 
 - (void)setUpTheActions {
