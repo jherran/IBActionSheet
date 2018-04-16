@@ -62,6 +62,7 @@ CGRect adjustedScreenBounds()
     self.transparentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds), CGRectGetHeight(bounds))];
     self.transparentView.backgroundColor = [UIColor blackColor];
     self.transparentView.alpha = 0.0f;
+    self.alphaTransparentView = 0.4f;
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelSelection)];
     tap.numberOfTapsRequired = 1;
@@ -676,7 +677,7 @@ CGRect adjustedScreenBounds()
                               delay:0.0f
                             options:UIViewAnimationOptionCurveEaseOut
                          animations:^() {
-                             self.transparentView.alpha = 0.4f;
+                             self.transparentView.alpha = self.alphaTransparentView;
                              self.center = CGPointMake(x, (height - 20) - CGRectGetHeight(self.frame) / 2.0);
                              
                          } completion:^(BOOL finished) {
@@ -690,7 +691,7 @@ CGRect adjustedScreenBounds()
               initialSpringVelocity:1.0f
                             options:UIViewAnimationOptionCurveLinear
                          animations:^{
-                             self.transparentView.alpha = 0.4f;
+                             self.transparentView.alpha = self.alphaTransparentView;
                              self.center = CGPointMake(x, height - CGRectGetHeight(self.frame) / 2.0);
                              
                          } completion:^(BOOL finished) {

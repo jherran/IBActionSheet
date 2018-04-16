@@ -110,6 +110,7 @@ typedef void (^IBActionCallback)(IBActionSheet *actionSheet, NSInteger buttonInd
 - (void)setButtonHighlightTextColor:(UIColor *)color forButtonAtIndex:(NSInteger)index;
 - (void)setButtonHighlightBackgroundColor:(UIColor *)color forButtonAtIndex:(NSInteger)index;
 
+@property CGFloat alphaTransparentView;
 @property UIView *transparentView;
 @property NSMutableArray *buttons;
 @property (nonatomic) NSString *title;
