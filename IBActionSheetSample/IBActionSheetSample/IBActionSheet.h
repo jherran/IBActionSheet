@@ -69,6 +69,7 @@ typedef void (^IBActionCallback)(IBActionSheet *actionSheet, NSInteger buttonInd
 }
 
 - (void)showInView:(UIView *)theView;
+- (void)landscapeShowInView:(UIView *)theView;
 - (NSInteger)addButtonWithTitle:(NSString *)title;
 - (NSInteger)addButtonWithImage:(UIImage *)image;
 - (void)dismissWithClickedButtonIndex:(NSInteger)buttonIndex animated:(BOOL)animated;

@@ -39,6 +39,14 @@ CGRect adjustedScreenBounds()
     return bounds;
 }
 
+CGRect landscapeAdjustedScreenBounds() {
+    CGRect bounds = [[UIScreen mainScreen] bounds];
+    CGFloat temp = bounds.size.width;
+    bounds.size.width = bounds.size.height;
+    bounds.size.height = temp;
+    return bounds;
+}
+
 
 @implementation IBActionSheet {
     
@@ -695,6 +703,64 @@ CGRect adjustedScreenBounds()
                              self.center = CGPointMake(x, height - CGRectGetHeight(self.frame) / 2.0);
                              
                          } completion:^(BOOL finished) {
+                             self.visible = YES;
+                         }];
+    }
+}
+
+- (void)landscapeShowInView:(UIView *)theView {
+    UIVisualEffect *blurEffect;
+    blurEffect = [UIBlurEffect effectWithStyle: UIBlurEffectStyleLight];
+    
+    if (NSClassFromString(@"UIVisualEffectView") && self.blurBackground) {
+        UIVisualEffectView *visualEffectView;
+        visualEffectView = [[UIVisualEffectView alloc] initWithEffect: blurEffect];
+        visualEffectView.frame = theView.bounds;
+        visualEffectView.tag = 821;
+        [theView addSubview: visualEffectView];
+        visualEffectView.userInteractionEnabled = NO;
+    }
+    
+    [theView addSubview: self];
+    
+    self.transparentView.frame = landscapeAdjustedScreenBounds();
+    [theView insertSubview: self.transparentView belowSubview: self];
+    
+    float height = CGRectGetWidth(landscapeAdjustedScreenBounds());
+    float x = CGRectGetWidth(theView.frame) / 2.0;
+    
+    self.center = CGPointMake(-x, height - CGRectGetWidth(self.frame) / 2);
+    self.transparentView.center = CGPointMake(-x, height / 2.0);
+    
+    if (SYSTEM_VERSION_LESS_THAN(@"7.0")) {
+        
+        
+        [UIView animateWithDuration: 0.3f
+                              delay: 0.0f
+                            options: UIViewAnimationOptionCurveEaseOut
+                         animations: ^() {
+                             self.transparentView.alpha = self.alphaTransparentView;
+                             self.transparentView.frame = theView.frame;
+                             self.transparentView.center = CGPointMake(x, height / 2.0);
+                             self.center = CGPointMake(0, height - CGRectGetWidth(self.frame) / 2);
+
+                         } completion: ^(BOOL finished) {
+                             self.visible = YES;
+                         }];
+    } else {
+        
+        [UIView animateWithDuration: 0.3f
+                              delay: 0
+             usingSpringWithDamping: 0.85f
+              initialSpringVelocity: 1.0f
+                            options: UIViewAnimationOptionCurveLinear
+                         animations: ^{
+                             self.transparentView.alpha = self.alphaTransparentView;
+                             self.transparentView.frame = theView.frame;
+                             self.transparentView.center = CGPointMake(x, height / 2.0);
+                             self.center = CGPointMake(0, height - CGRectGetWidth(self.frame) / 2);
+                             
+                         } completion: ^(BOOL finished) {
                              self.visible = YES;
                          }];
     }
