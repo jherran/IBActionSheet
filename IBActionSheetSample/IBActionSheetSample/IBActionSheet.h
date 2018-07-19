@@ -76,9 +76,9 @@ typedef void (^IBActionCallback)(IBActionSheet *actionSheet, NSInteger buttonInd
 - (id)initWithTitle:(NSString *)title delegate:(id<IBActionSheetDelegate>)delegate cancelButtonTitle:(NSString *)cancelTitle destructiveButtonTitle:(NSString *)destructiveTitle otherButtonTitles:(NSString *)otherTitles, ... NS_REQUIRES_NIL_TERMINATION;
 
 - (id)initWithTitle:(NSString *)title callback:(IBActionCallback)callback cancelButtonTitle:(NSString *)cancelTitle destructiveButtonTitle:(NSString *)destructiveTitle otherButtonTitles:(NSString *)otherTitles, ... NS_REQUIRES_NIL_TERMINATION;
-
 - (id)initWithTitle:(NSString *)title delegate:(id<IBActionSheetDelegate>)delegate cancelButtonTitle:(NSString *)cancelTitle destructiveButtonTitle:(NSString *)destructiveTitle otherButtonTitlesArray:(NSArray *)otherTitlesArray;
 - (id)initWithTitle:(NSString *)title callback:(IBActionCallback)callback cancelButtonTitle:(NSString *)cancelTitle destructiveButtonTitle:(NSString *)destructiveTitle otherButtonTitlesArray:(NSArray *)otherTitlesArray;
+- (id)initWithTitle:(NSString *)title callback:(IBActionCallback)callback cancelButtonTitle:(NSString *)cancelTitle destructiveButtonTitle:(NSString *)destructiveTitle otherButtonTitlesArray:(NSArray *)otherTitlesArray orientation:(UIInterfaceOrientation)orientation; 
 
 
 
@@ -128,10 +128,13 @@ typedef void (^IBActionCallback)(IBActionSheet *actionSheet, NSInteger buttonInd
 
 @interface IBActionSheetButton : UIButton
 
-
+- (id)initWithOrientation:(UIInterfaceOrientation)orientation;
 - (id)initWithTopCornersRounded;
+- (id)initWithTopCornersRoundedWithOrientation:(UIInterfaceOrientation)orientation;
 - (id)initWithAllCornersRounded;
+- (id)initWithAllCornersRoundedWithOrientation:(UIInterfaceOrientation)orientation;
 - (id)initWithBottomCornersRounded;
+- (id)initWithBottomCornersRoundedWithOrientation:(UIInterfaceOrientation)orientation;
 - (void)resizeForPortraitOrientation;
 - (void)resizeForLandscapeOrientation;
 - (void)setTextColor:(UIColor *)color;
@@ -152,7 +155,7 @@ typedef void (^IBActionCallback)(IBActionSheet *actionSheet, NSInteger buttonInd
 - (void)resizeForPortraitOrientation;
 - (void)resizeForLandscapeOrientation;
 - (id)initWithTitle:(NSString *)title font:(UIFont *)font;
-
+- (id)initWithOrientation:(UIInterfaceOrientation)orientation;
 
 
 @property UILabel *titleLabel;
