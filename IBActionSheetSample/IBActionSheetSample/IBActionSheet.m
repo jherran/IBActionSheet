@@ -677,6 +677,12 @@ CGRect landscapeAdjustedScreenBounds() {
     
     [theView insertSubview:self.transparentView belowSubview:self];
     
+    CGFloat safeArea = 0;
+    if (@available(iOS 11.0, *)) {
+        UIWindow *mainWindow = [[[UIApplication sharedApplication] delegate] window];
+        safeArea = mainWindow.safeAreaInsets.bottom;
+    }
+    
     float height = CGRectGetHeight(adjustedScreenBounds());
     float x = CGRectGetWidth(theView.frame) / 2.0;
     
@@ -705,7 +711,7 @@ CGRect landscapeAdjustedScreenBounds() {
                             options:UIViewAnimationOptionCurveLinear
                          animations:^{
                              self.transparentView.alpha = self.alphaTransparentView;
-                             self.center = CGPointMake(x, height - CGRectGetHeight(self.frame) / 2.0);
+                             self.center = CGPointMake(x, height - safeArea - CGRectGetHeight(self.frame) / 2.0);
                              
                          } completion:^(BOOL finished) {
                              self.visible = YES;
